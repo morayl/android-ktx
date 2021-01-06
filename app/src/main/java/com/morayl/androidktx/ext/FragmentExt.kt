@@ -3,6 +3,7 @@ package com.morayl.androidktx.ext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlin.properties.ReadOnlyProperty
 
 /**
  * Fragmentのargumentを型にキャストして取得
@@ -14,11 +15,11 @@ fun <T> Fragment.getArgument(key: String): T? {
 
 /**
  * Fragmentのargumentを型にキャストして取得(non-null)
+ * 移譲プロパティにも対応
  */
 @Suppress("UNCHECKED_CAST")
-fun <T> Fragment.requireArgument(key: String): T {
-    return requireArguments().get(key) as T
-}
+fun <T> Fragment.requireArgument(key: String): ReadOnlyProperty<Fragment, T> =
+    ReadOnlyProperty { _, _ -> requireArguments().get(key) as T }
 
 /**
  * AACのViewModelをFactoryクラス不要で生成する
