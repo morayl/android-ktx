@@ -1,7 +1,7 @@
 package com.morayl.androidktx.ext
 
 import androidx.lifecycle.MutableLiveData
-import com.morayl.androidktx.util.Event
+import com.morayl.androidktx.parameter.Event
 
 /**
  * Event型をpostする際にEvent()を省略する

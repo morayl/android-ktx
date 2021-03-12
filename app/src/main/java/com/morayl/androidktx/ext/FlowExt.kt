@@ -2,7 +2,7 @@ package com.morayl.androidktx.ext
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import com.morayl.androidktx.util.Event
+import com.morayl.androidktx.parameter.Event
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.CoroutineContext

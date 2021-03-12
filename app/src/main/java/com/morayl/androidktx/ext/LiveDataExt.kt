@@ -3,8 +3,8 @@ package com.morayl.androidktx.ext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.morayl.androidktx.util.Event
-import com.morayl.androidktx.util.EventObserver
+import com.morayl.androidktx.parameter.Event
+import com.morayl.androidktx.parameter.EventObserver
 
 /**
  * valueをnon-nullで取得

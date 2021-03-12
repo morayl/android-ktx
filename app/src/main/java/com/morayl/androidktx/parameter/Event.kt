@@ -1,4 +1,4 @@
-package com.morayl.androidktx.util
+package com.morayl.androidktx.parameter
 
 import androidx.lifecycle.Observer
 
