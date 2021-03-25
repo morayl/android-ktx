@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidKtx</string>
+    <string name="message_no_apps_to_launch">起動できるアプリがありません</string>
 </resources>
