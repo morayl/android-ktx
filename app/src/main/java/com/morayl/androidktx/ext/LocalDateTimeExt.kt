@@ -2,6 +2,7 @@ package com.morayl.androidktx.ext
 
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.TemporalUnit
 
 /**
  * 日付フォーマット
@@ -19,4 +20,8 @@ enum class DateTimeFormat(val value: String) {
  */
 fun LocalDateTime.format(format: DateTimeFormat): String {
     return format(DateTimeFormatter.ofPattern(format.value))
+}
+
+fun LocalDateTime.isEqual(other: LocalDateTime, unit: TemporalUnit): Boolean {
+    return truncatedTo(unit) == other.truncatedTo(unit)
 }
