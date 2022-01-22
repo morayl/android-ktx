@@ -6,11 +6,13 @@ import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavArgs
 import androidx.navigation.NavArgsLazy
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.CoroutineScope
 import kotlin.properties.ReadOnlyProperty
 
 /**
@@ -129,3 +131,6 @@ inline fun <reified T> Fragment.setNavResultAndPopUp(
     setNavResult(result, destination, key)
     findNavController().popBackStack(destination, inclusive)
 }
+
+val Fragment.viewLifecycleScope: CoroutineScope
+    get() = viewLifecycleOwner.lifecycleScope
