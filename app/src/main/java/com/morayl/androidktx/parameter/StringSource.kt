@@ -1,7 +1,9 @@
 package com.morayl.androidktx.parameter
 
 import android.content.Context
+import android.widget.TextView
 import androidx.annotation.StringRes
+import androidx.databinding.BindingAdapter
 
 sealed class StringSource {
     abstract fun getString(context: Context): String
@@ -38,4 +40,9 @@ sealed class StringSource {
 
         operator fun invoke(@StringRes textRes: Int, vararg formatArgs: Any): StringSource = FormatResource(textRes, *formatArgs)
     }
+}
+
+@BindingAdapter("stringSource")
+fun TextView.setStringSource(source: StringSource) {
+    text = source.getString(context)
 }
