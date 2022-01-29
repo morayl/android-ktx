@@ -7,9 +7,12 @@ import androidx.lifecycle.lifecycleScope
 import com.morayl.androidktx.parameter.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -42,4 +45,11 @@ fun <T> Flow<T>.observe(owner: LifecycleOwner, action: (T) -> Unit) {
             action(it)
         }
     }.launchIn(owner.lifecycleScope)
+}
+
+/**
+ * https://github.com/Kotlin/kotlinx.coroutines/issues/2514
+ */
+fun <T, R> StateFlow<T>.mapAsStateFlow(scope: CoroutineScope, mapper: (value: T) -> R): StateFlow<R> {
+    return map { mapper(it) }.stateIn(scope, SharingStarted.Eagerly, mapper(value))
 }
