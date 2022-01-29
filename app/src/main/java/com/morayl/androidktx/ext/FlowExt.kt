@@ -24,6 +24,10 @@ fun <T> Flow<T>.asEventLiveData(
     timeoutInMs: Long = 5000L
 ): LiveData<Event<T>> = map { Event(it) }.asLiveData(context, timeoutInMs)
 
+fun <T> Flow<T>.asLiveData(scope: CoroutineScope): LiveData<T> {
+    return asLiveData(scope.coroutineContext)
+}
+
 fun <T> Flow<T>.observe(scope: CoroutineScope, action: (T) -> Unit) {
     onEach { action(it) }.launchIn(scope)
 }
