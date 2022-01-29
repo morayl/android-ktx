@@ -3,13 +3,18 @@ package com.morayl.androidktx.ext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.morayl.androidktx.parameter.Event
 import com.morayl.androidktx.parameter.EventObserver
 
 /**
  * valueをnon-nullで取得
  */
-fun <T : Any> LiveData<T>.requireValue() = requireNotNull(value)
+fun <T> LiveData<T>.requireValue() = requireNotNull(value)
+
+inline fun <T> MutableLiveData<T>.requireUpdate(function: (T) -> T) {
+    value = function(requireValue())
+}
 
 /**
  * Event型のLiveDataをobserveし、Eventの中身をハンドリングする
