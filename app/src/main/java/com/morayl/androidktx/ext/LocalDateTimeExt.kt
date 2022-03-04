@@ -1,6 +1,7 @@
 package com.morayl.androidktx.ext
 
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.TemporalUnit
 
@@ -24,4 +25,16 @@ fun LocalDateTime.format(format: DateTimeFormat): String {
 
 fun LocalDateTime.isEqual(other: LocalDateTime, unit: TemporalUnit): Boolean {
     return truncatedTo(unit) == other.truncatedTo(unit)
+}
+
+fun LocalDateTime.isAfterOrEqual(other: LocalDateTime, unit: TemporalUnit): Boolean {
+    return isEqual(other, unit) || isAfter(other, unit)
+}
+
+fun LocalDateTime.isAfter(other: LocalDateTime, unit: TemporalUnit): Boolean {
+    return truncatedTo(unit).isAfter(other.truncatedTo(unit))
+}
+
+fun LocalDateTime.toEpochMilli(): Long {
+    return atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
