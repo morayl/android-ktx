@@ -71,8 +71,6 @@ fun Fragment.navigate(directions: NavDirections, navigatorExtras: Navigator.Extr
     findNavController().navigate(directions, navigatorExtras)
 }
 
-fun Fragment.popBackStack(): Boolean = findNavController().popBackStack()
-
 const val DEFAULT_NAVIGATION_RESULT_KEY = "result"
 
 inline fun <reified T> Fragment.observeNavResult(
