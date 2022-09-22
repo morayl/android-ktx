@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 sealed class DrawableSource : Parcelable {
 
