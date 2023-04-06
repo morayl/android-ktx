@@ -57,3 +57,5 @@ fun <T> Flow<T>.observe(owner: LifecycleOwner, action: (T) -> Unit) {
 fun <T, R> StateFlow<T>.mapAsStateFlow(scope: CoroutineScope, mapper: (value: T) -> R): StateFlow<R> {
     return map { mapper(it) }.stateIn(scope, SharingStarted.Eagerly, mapper(value))
 }
+
+fun <T> StateFlow<T?>.requireValue(): T = requireNotNull(value)
