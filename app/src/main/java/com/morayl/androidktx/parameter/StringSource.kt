@@ -2,9 +2,7 @@ package com.morayl.androidktx.parameter
 
 import android.content.Context
 import android.os.Parcelable
-import android.widget.TextView
 import androidx.annotation.StringRes
-import androidx.databinding.BindingAdapter
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -27,7 +25,8 @@ sealed class StringSource : Parcelable {
     }
 
     @Parcelize
-    private class FormatResourceSerializable<T : Serializable>(@StringRes private val textRes: Int, private vararg val formatArgs: T) : StringSource() {
+    private class FormatResourceSerializable<T : Serializable>(@StringRes private val textRes: Int, private vararg val formatArgs: T) :
+        StringSource() {
         @Suppress("SpreadOperator")
         override fun getString(context: Context): String {
             val formatArgs = formatArgs.map { if (it is StringSource) it.getString(context) else it }.toTypedArray()
@@ -36,7 +35,8 @@ sealed class StringSource : Parcelable {
     }
 
     @Parcelize
-    private class FormatResourceStringSource(@StringRes private val textRes: Int, private vararg val formatArgs: StringSource) : StringSource() {
+    private class FormatResourceStringSource(@StringRes private val textRes: Int, private vararg val formatArgs: StringSource) :
+        StringSource() {
         @Suppress("SpreadOperator")
         override fun getString(context: Context): String {
             val formatArgs = formatArgs.map { it.getString(context) }.toTypedArray()
@@ -61,13 +61,10 @@ sealed class StringSource : Parcelable {
 
         operator fun invoke(@StringRes textRes: Int): StringSource = Resource(textRes)
 
-        operator fun <T : Serializable> invoke(@StringRes textRes: Int, vararg formatArgs: T): StringSource = FormatResourceSerializable(textRes, *formatArgs)
+        operator fun <T : Serializable> invoke(@StringRes textRes: Int, vararg formatArgs: T): StringSource =
+            FormatResourceSerializable(textRes, *formatArgs)
 
-        operator fun invoke(@StringRes textRes: Int, vararg formatArgs: StringSource): StringSource = FormatResourceStringSource(textRes, *formatArgs)
+        operator fun invoke(@StringRes textRes: Int, vararg formatArgs: StringSource): StringSource =
+            FormatResourceStringSource(textRes, *formatArgs)
     }
-}
-
-@BindingAdapter("stringSource")
-fun TextView.setStringSource(source: StringSource) {
-    text = source.getString(context)
 }
