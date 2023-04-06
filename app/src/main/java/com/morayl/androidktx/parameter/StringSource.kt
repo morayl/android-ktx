@@ -1,22 +1,33 @@
 package com.morayl.androidktx.parameter
 
 import android.content.Context
+import android.os.Parcelable
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-sealed class StringSource {
+/**
+ * 任意のタイミングでContextを渡してStringを取得できるようにするクラス
+ * 利用することで、Contextの引き回しを抑えることができる
+ * 各sealed実装クラスはprivateでFakeコンストラクタによって、実装クラスを気にせずStringSource()として使えるようになっています
+ */
+sealed class StringSource : Parcelable {
     abstract fun getString(context: Context): String
 
+    @Parcelize
     private data class Raw(private val text: String) : StringSource() {
         override fun getString(context: Context): String = text
     }
 
+    @Parcelize
     private data class Resource(@StringRes private val textRes: Int) : StringSource() {
         override fun getString(context: Context): String = context.getString(textRes)
     }
 
-    private class FormatResource(@StringRes private val textRes: Int, private vararg val formatArgs: Any) : StringSource() {
+    @Parcelize
+    private class FormatResourceSerializable<T : Serializable>(@StringRes private val textRes: Int, private vararg val formatArgs: T) : StringSource() {
         @Suppress("SpreadOperator")
         override fun getString(context: Context): String {
             val formatArgs = formatArgs.map { if (it is StringSource) it.getString(context) else it }.toTypedArray()
@@ -24,8 +35,20 @@ sealed class StringSource {
         }
     }
 
+    @Parcelize
+    private class FormatResourceStringSource(@StringRes private val textRes: Int, private vararg val formatArgs: StringSource) : StringSource() {
+        @Suppress("SpreadOperator")
+        override fun getString(context: Context): String {
+            val formatArgs = formatArgs.map { it.getString(context) }.toTypedArray()
+            return context.getString(textRes, *formatArgs)
+        }
+    }
+
+    @Parcelize
     private class StringSourceList(private val list: List<StringSource>) : StringSource() {
-        override fun getString(context: Context): String = list.joinToString(separator = "") { it.getString(context) }
+        override fun getString(context: Context): String {
+            return list.joinToString(separator = "") { it.getString(context) }
+        }
     }
 
     operator fun plus(other: StringSource): StringSource = StringSourceList(listOf(this, other))
@@ -38,7 +61,9 @@ sealed class StringSource {
 
         operator fun invoke(@StringRes textRes: Int): StringSource = Resource(textRes)
 
-        operator fun invoke(@StringRes textRes: Int, vararg formatArgs: Any): StringSource = FormatResource(textRes, *formatArgs)
+        operator fun <T : Serializable> invoke(@StringRes textRes: Int, vararg formatArgs: T): StringSource = FormatResourceSerializable(textRes, *formatArgs)
+
+        operator fun invoke(@StringRes textRes: Int, vararg formatArgs: StringSource): StringSource = FormatResourceStringSource(textRes, *formatArgs)
     }
 }
 
