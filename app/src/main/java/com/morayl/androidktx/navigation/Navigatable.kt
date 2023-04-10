@@ -13,18 +13,7 @@ import androidx.navigation.fragment.findNavController
 interface Navigatable<T> {
     val navDirections: T
 
-    /**
-     * TのnavigationId。基本はそのFragmentのNavigationIdだが、子Fragmentなどで親のNavDirectionを利用している場合は親FragmentのnavigationIdを指定する。
-     * 連打などにより自分のDestination以外から自分が持つDirectionに遷移しようとしてクラッシュする問題を防ぐために作成
-     */
-    val navigationRootIds: List<Int>
-
     fun Fragment.navigate(navOptions: NavOptions? = null, action: T.() -> NavDirections) {
-        val navigationRootIds = navigationRootIds
-        if (findNavController().currentDestination?.id?.let { navigationRootIds.contains(it) } == false) {
-            // navigationRootIdsに含まれていなければ、遷移しない
-            return
-        }
         navigate(action(navDirections), navOptions)
     }
 
@@ -38,5 +27,11 @@ interface Navigatable<T> {
 }
 
 private fun Fragment.navigate(directions: NavDirections, navOptions: NavOptions? = null) {
-    findNavController().navigate(directions, navOptions)
+    try {
+        findNavController().navigate(directions, navOptions)
+    } catch (ignore: IllegalArgumentException) {
+        // リストなどで同時押しされて遷移する場合(例：FragmentA→FragmentB)、一回目のクリック処理でBに遷移した後二回目のクリック処理時にBに遷移しようとする
+        // が、すでにBに遷移しているため、B→Bの遷移が定義されていないとIllegalArgumentExceptionが発生する
+        // Exceptionを用いずに、findNavController().currentDestination?.getAction(directions.actionId) ?: returnという方法でも回避できる
+    }
 }
