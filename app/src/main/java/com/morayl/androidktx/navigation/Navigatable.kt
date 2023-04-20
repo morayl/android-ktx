@@ -24,14 +24,14 @@ interface Navigatable<T> {
     ) {
         navigate(action(navDirections), NavOptions.Builder().setPopUpTo(popUpToDestination, inclusive).build())
     }
-}
 
-private fun Fragment.navigate(directions: NavDirections, navOptions: NavOptions? = null) {
-    try {
-        findNavController().navigate(directions, navOptions)
-    } catch (ignore: IllegalArgumentException) {
-        // リストなどで同時押しされて遷移する場合(例：FragmentA→FragmentB)、一回目のクリック処理でBに遷移した後二回目のクリック処理時にBに遷移しようとする
-        // が、すでにBに遷移しているため、B→Bの遷移が定義されていないとIllegalArgumentExceptionが発生する
-        // Exceptionを用いずに、findNavController().currentDestination?.getAction(directions.actionId) ?: returnという方法でも回避できる
+    private fun Fragment.navigate(directions: NavDirections, navOptions: NavOptions? = null) {
+        try {
+            findNavController().navigate(directions, navOptions)
+        } catch (ignore: IllegalArgumentException) {
+            // リストなどで同時押しされて遷移する場合(例：FragmentA→FragmentB)、一回目のクリック処理でBに遷移した後二回目のクリック処理時にBに遷移しようとする
+            // が、すでにBに遷移しているため、B→Bの遷移が定義されていないとIllegalArgumentExceptionが発生する
+            // Exceptionを用いずに、findNavController().currentDestination?.getAction(directions.actionId) ?: returnという方法でも回避できる
+        }
     }
 }
